@@ -23,6 +23,14 @@ public class Plan extends BaseEntity{
         this.deviceTpyeId = deviceTpyeId;
     }
 
+    public Plan(int id, int days, String name, String description, String deviceTpyeId) {
+        super(id, tableName);
+        this.days = days;
+        this.name = name;
+        this.description = description;
+        this.deviceTpyeId = deviceTpyeId;
+    }
+
     public void save() {
         super.save(String.format(insertQueryTemplate, days, name, description, deviceTpyeId));
     }

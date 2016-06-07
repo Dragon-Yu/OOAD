@@ -19,7 +19,10 @@ public abstract class BaseEntity {
         this.tableName = tableName;
     }
 
-    public abstract void save();
+    public BaseEntity(int id, String tableName) {
+        this.id = id;
+        this.tableName = tableName;
+    }
 
     public static Statement getStatementInstance() {
         if (statement == null){
