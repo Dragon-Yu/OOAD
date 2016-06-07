@@ -13,6 +13,7 @@ public abstract class BaseEntity {
     private int id;
     private String tableName;
     private static final String deleteQueryTemplate = "delete from %s where id = %d";
+    private static final String getNewIdQueryTemplate = "select max(id) as max_id from %s";
 
     public BaseEntity(String tableName) {
         this.id = -1;
@@ -22,6 +23,14 @@ public abstract class BaseEntity {
     public BaseEntity(int id, String tableName) {
         this.id = id;
         this.tableName = tableName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
     }
 
     public static Statement getStatementInstance() {
@@ -61,20 +70,23 @@ public abstract class BaseEntity {
         String sql = String.format(deleteQueryTemplate, tableName, id);
         try {
             int result = getStatementInstance().executeUpdate(sql);
-            System.out.println(result + " rows affected");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
     public void save(String sql) {
+        ResultSet result = null;
         if (exist()) {
             delete();
         }
         try {
-            int result = getStatementInstance().executeUpdate(sql);
+            getStatementInstance().executeUpdate(sql);
+            result = getStatementInstance().executeQuery(String.format(getNewIdQueryTemplate, tableName));
+            result.next();
+            id = result.getInt("max_id");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 }
