@@ -14,7 +14,7 @@ public class Plan extends BaseEntity{
     private String description;
     private int deviceTpyeId;
     public static final String tableName = "plan";
-    private static final String saveQueryTemplate = "insert into %s (days, name, description, device_type_id) values(%d, '%s', '%s', '%s')";
+    private static final String saveQueryTemplate = "insert into %s (days, name, description, device_type_id) values(%d, '%s', '%s', %d)";
     private static final String getPlansByDeviceTypeIdQueryTemplate = "select * from %s where device_type_id = %d";
     private static final String getPlansByIdQueryTemplate = "select * from %s where id = %d";
 
@@ -35,7 +35,7 @@ public class Plan extends BaseEntity{
     }
 
     public void save() {
-        super.save(String.format(saveQueryTemplate, days, name, description, deviceTpyeId));
+        super.save(String.format(saveQueryTemplate, Plan.tableName,  days, name, description, deviceTpyeId));
     }
 
     public static ArrayList<Plan> getPlansFromQuery(String sql) {
@@ -49,7 +49,7 @@ public class Plan extends BaseEntity{
                 int days = result.getInt("days");
                 String name = result.getString("name");
                 String description = result.getString("description");
-                int deviceTypeId = result.getInt("devict_type_id");
+                int deviceTypeId = result.getInt("device_type_id");
                 planArrayList.add(new Plan(id, days, name, description, deviceTypeId));
             }
         } catch (SQLException e) {

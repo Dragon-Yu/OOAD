@@ -13,7 +13,6 @@ public class Device extends BaseEntity {
     private Date equipTime;
     private String location;
     private int deviceTypeId;
-    private static final int oneDay = 3600 * 1000 * 24;
     public static final String tableName = "device";
     private static final String saveQueryTemplate = "insert into %s (equip_time, location, device_type_id) values ('%s', '%s', %d)";
     private static final String getDevicesByDeviceTypeIdQueryTemplate = "select * from %s where device_type_id = %d";

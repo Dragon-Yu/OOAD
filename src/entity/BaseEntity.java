@@ -12,6 +12,7 @@ public abstract class BaseEntity {
     private static Statement statement = null;
     private int id;
     private String tableName;
+    public static final long oneDay = 3600 * 1000 * 24;
     private static final String deleteQueryTemplate = "delete from %s where id = %d";
     private static final String getNewIdQueryTemplate = "select max(id) as max_id from %s";
 
