@@ -12,6 +12,7 @@ public abstract class BaseEntity {
     private static Statement statement = null;
     private int id;
     private String tableName;
+    private static final String deleteQueryTemplate = "delete from %s where id = %d";
 
     public BaseEntity(String tableName) {
         this.id = -1;
@@ -20,7 +21,7 @@ public abstract class BaseEntity {
 
     public abstract void save();
 
-    public static Statement getDbConnection() {
+    public static Statement getStatementInstance() {
         if (statement == null){
             synchronized (BaseEntity.class){
                 if (statement == null) {
@@ -32,17 +33,20 @@ public abstract class BaseEntity {
                         e.printStackTrace();
                         return null;
                     }
+                } else {
+                    return statement;
                 }
             }
+        } else {
+            return statement;
         }
-        return statement;
     }
 
     public boolean exist() {
         ResultSet result = null;
-        String sql = "select count(*) from " + this.tableName + " where id = " + this.id;
+        String sql = "select count(*) from " + tableName + " where id = " + id;
         try {
-            result = statement.executeQuery(sql);
+            result = getStatementInstance().executeQuery(sql);
             return result.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,6 +55,23 @@ public abstract class BaseEntity {
     }
 
     public void delete() {
+        String sql = String.format(deleteQueryTemplate, tableName, id);
+        try {
+            int result = getStatementInstance().executeUpdate(sql);
+            System.out.println(result + " rows affected");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void save(String sql) {
+        if (exist()) {
+            delete();
+        }
+        try {
+            int result = getStatementInstance().executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

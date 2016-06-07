@@ -2,7 +2,7 @@ create table plan (
 	id int not null auto_increment primary key,
 	days int not null,
 	name varchar(255),
-	description varchar(65535),
+	description text,
 	device_type_id int not null,
 	foreign key (device_type_id) references device_type(id)
 )
@@ -11,7 +11,7 @@ create table device_type (
 	id int not null auto_increment primary key,
 	code varchar(128),
 	name varchar(255) not null,
-	description varchar(65535)
+	description text
 )
 
 create table device (
