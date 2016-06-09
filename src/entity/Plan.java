@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class Plan extends BaseEntity{
     private int days;
-    private String name;
+    private PlanName name;
     private String description;
     private int deviceTpyeId;
     public static final String tableName = "plan";
@@ -22,14 +22,14 @@ public class Plan extends BaseEntity{
         super(tableName);
     }
 
-    public Plan(int days, String name, String description, int deviceTpyeId) {
+    public Plan(int days, PlanName name, String description, int deviceTpyeId) {
         this();
         this.days = days;
         this.name = name;
         this.description = description;
         this.deviceTpyeId = deviceTpyeId;
     }
-    public Plan(int id, int days, String name, String description, int deviceTpyeId) {
+    public Plan(int id, int days, PlanName name, String description, int deviceTpyeId) {
         this(days, name, description, deviceTpyeId);
         setId(id);
     }
@@ -50,7 +50,7 @@ public class Plan extends BaseEntity{
                 String name = result.getString("name");
                 String description = result.getString("description");
                 int deviceTypeId = result.getInt("device_type_id");
-                planArrayList.add(new Plan(id, days, name, description, deviceTypeId));
+                planArrayList.add(new Plan(id, days, PlanName.valueOf(name), description, deviceTypeId));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

@@ -1,3 +1,9 @@
+drop table plan_sheet;
+drop table employee;
+drop table device;
+drop table plan;
+drop table device_type;
+
 create table device_type (
 	id int not null auto_increment primary key,
 	code varchar(128),
@@ -8,7 +14,7 @@ create table device_type (
 create table plan (
 	id int not null auto_increment primary key,
 	days int not null,
-	name varchar(255),
+	name enum('SMALL', 'MIDDLE', 'BIG') not null,
 	description text,
 	device_type_id int not null,
 	foreign key (device_type_id) references device_type(id)
@@ -33,7 +39,7 @@ create table plan_sheet (
 	id int not null auto_increment primary key,
 	device_id int not null,
 	plan_id int not null,
-	state enum('wait', 'finished', 'canceled') not null default 'wait',
+	state enum('WAITING', 'FINISHED', 'CANCELED') not null default 'WAITING',
 	should_do_time date not null,
 	do_time date default null,
 	employee_id int default null,

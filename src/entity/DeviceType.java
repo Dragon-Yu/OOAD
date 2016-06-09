@@ -33,11 +33,11 @@ public class DeviceType extends BaseEntity {
     }
 
     public ArrayList<Device> getDevices() {
-        return Device.getDevicesByDeviceTypeId(this.getId());
+        return Device.getDevicesByDeviceTypeId(getId());
     }
 
     public ArrayList<Plan>  getPlans() {
-        return Plan.getPlansByDeviceTypeId(this.getId());
+        return Plan.getPlansByDeviceTypeId(getId());
     }
 
     public Device addDevice(Date equipTime, String location) {
@@ -46,32 +46,9 @@ public class DeviceType extends BaseEntity {
         return device;
     }
 
-    public Plan addPlan(int days, String name, String description) {
+    public Plan addPlan(int days, PlanName name, String description) {
         Plan plan = new Plan(days, name, description, getId());
         plan.save();
         return plan;
-    }
-
-    public static void main(String args[]) {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        DeviceType deviceType = new DeviceType("#123A", "air mechine", "lalla");
-        deviceType.save();
-        deviceType.addPlan(30, "small", "small fix");
-        deviceType.addPlan(50, "middle", "middle fix");
-        deviceType.addPlan(90, "big", "big fix");
-        deviceType.addDevice(new Date(1024), "hejian");
-        deviceType.addDevice(new Date(123123123123l), "beijing");
-        ArrayList<Device> deviceArrayList = deviceType.getDevices();
-        for (Device device : deviceArrayList) {
-            device.generatePlanSheets();
-        }
-        for (PlanSheet planSheet : PlanSheet.getWaitPlanSheetsWithinDays(100)) {
-            System.out.println(planSheet.getId());
-        }
     }
 }

@@ -16,6 +16,8 @@ public class Device extends BaseEntity {
     public static final String tableName = "device";
     private static final String saveQueryTemplate = "insert into %s (equip_time, location, device_type_id) values ('%s', '%s', %d)";
     private static final String getDevicesByDeviceTypeIdQueryTemplate = "select * from %s where device_type_id = %d";
+    private static final String getTotalHoursQueryTemplate = "select sum(hours) as sum_hours from %s where device_id = %d and state = '%s'";
+    private static final String getTotalHoursByPlanNameQueryTemplate = "select sum(a.hours) as sum_hours from %s as a,%s as b where a.plan_id = b.id and a.device_id = %d and a.state = '%s' and b.name = '%s'";
 
     public Device() {
         super(tableName);
@@ -49,6 +51,31 @@ public class Device extends BaseEntity {
             }
         }
         return planSheetArrayList;
+    }
+
+    public float getTotalHoursFromQuery(String sql) {
+        float totalHours = 0;
+        ResultSet result = null;
+        try {
+            Statement statement = getStatementInstance();
+            result = statement.executeQuery(sql);
+            if (result.next()) {
+                totalHours = result.getFloat("sum_hours");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return totalHours;
+    }
+
+    public float getTotalHours() {
+        String sql = String.format(getTotalHoursQueryTemplate, PlanSheet.tableName, Plan.tableName, getId(), State.FINISHED);
+        return getTotalHoursFromQuery(sql);
+    }
+
+    public float getTotalHoursByPlanName(PlanName planName) {
+        String sql = String.format(getTotalHoursByPlanNameQueryTemplate, PlanSheet.tableName, Plan.tableName, getId(), State.FINISHED, planName);
+        return getTotalHoursFromQuery(sql);
     }
 
     public static ArrayList<Device> getDevicesFromQuery(String sql) {
