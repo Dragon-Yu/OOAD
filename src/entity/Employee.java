@@ -7,11 +7,11 @@ public class Employee extends BaseEntity {
     private String name;
     private Gender gender;
     private int age;
-    public static final String tableName = "employee";
-    public static final String saveQueryTemplate = "insert into %s (name, gender, age) values('%s', '%s', %d)";
+    public static final String TABLE_NAME = "employee";
+    public static final String SAVE_QUERY_TEMPLATE = "insert into %s (name, gender, age) values('%s', '%s', %d)";
 
     public Employee() {
-        super(tableName);
+        super(TABLE_NAME);
     }
     public Employee(String name, Gender gender, int age) {
         this();
@@ -19,13 +19,13 @@ public class Employee extends BaseEntity {
         this.gender = gender;
         this.age = age;
     }
-    public Employee(int id, String name, Gender gender, int age) {
+    private Employee(int id, String name, Gender gender, int age) {
         this(name, gender, age);
         this.setId(id);
     }
 
     public void save() {
-        super.save(String.format(saveQueryTemplate, tableName, name, gender, age));
+        super.save(String.format(SAVE_QUERY_TEMPLATE, TABLE_NAME, name, gender, age));
     }
 
     public static void main(String args[]) {

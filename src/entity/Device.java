@@ -1,5 +1,7 @@
 package entity;
 
+import database.MySQL;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,14 +15,14 @@ public class Device extends BaseEntity {
     private Date equipTime;
     private String location;
     private int deviceTypeId;
-    public static final String tableName = "device";
-    private static final String saveQueryTemplate = "insert into %s (equip_time, location, device_type_id) values ('%s', '%s', %d)";
-    private static final String getDevicesByDeviceTypeIdQueryTemplate = "select * from %s where device_type_id = %d";
-    private static final String getTotalHoursQueryTemplate = "select sum(hours) as sum_hours from %s where device_id = %d and state = '%s'";
-    private static final String getTotalHoursByPlanNameQueryTemplate = "select sum(a.hours) as sum_hours from %s as a,%s as b where a.plan_id = b.id and a.device_id = %d and a.state = '%s' and b.name = '%s'";
+    public static final String TABLE_NAME = "device";
+    private static final String SAVE_QUERY_TEMPLATE = "insert into %s (equip_time, location, device_type_id) values ('%s', '%s', %d)";
+    private static final String GET_DEVICES_BY_DEVICE_TYPE_ID_QUERY_TEMPLATE = "select * from %s where device_type_id = %d";
+    private static final String GET_TOTAL_HOURS_QUERY_TEMPLATE = "select sum(hours) as sum_hours from %s where device_id = %d and state = '%s'";
+    private static final String GET_TOTAL_HOURS_BY_PLAN_NAME_QUERY_TEMPLATE = "select sum(a.hours) as sum_hours from %s as a,%s as b where a.plan_id = b.id and a.device_id = %d and a.state = '%s' and b.name = '%s'";
 
     public Device() {
-        super(tableName);
+        super(TABLE_NAME);
     }
     public Device(Date equipTime, String location, int deviceTypeId) {
         this();
@@ -28,13 +30,13 @@ public class Device extends BaseEntity {
         this.location = location;
         this.deviceTypeId = deviceTypeId;
     }
-    public Device(int id, Date equipTime, String location, int deviceTypeId) {
+    private Device(int id, Date equipTime, String location, int deviceTypeId) {
         this(equipTime, location, deviceTypeId);
         setId(id);
     }
 
     public void save() {
-        super.save(String.format(saveQueryTemplate, Device.tableName, equipTime, location, deviceTypeId));
+        super.save(String.format(SAVE_QUERY_TEMPLATE, Device.TABLE_NAME, equipTime, location, deviceTypeId));
     }
 
     public ArrayList<PlanSheet> generatePlanSheets() {
@@ -44,7 +46,7 @@ public class Device extends BaseEntity {
         for (Plan plan : planArrayList) {
             Date nowDate = new Date(new java.util.Date().getTime());
             for (int i = plan.getDays(); i <= 365; i += plan.getDays()) {
-                nowDate.setTime(nowDate.getTime() + plan.getDays() * oneDay);
+                nowDate.setTime(nowDate.getTime() + plan.getDays() * ONE_DAY);
                 PlanSheet planSheet = new PlanSheet(getId(), plan.getId(), nowDate);
                 planSheet.save();
                 planSheetArrayList.add(planSheet);
@@ -57,7 +59,7 @@ public class Device extends BaseEntity {
         float totalHours = 0;
         ResultSet result = null;
         try {
-            Statement statement = getStatementInstance();
+            Statement statement = MySQL.getStatementInstance();
             result = statement.executeQuery(sql);
             if (result.next()) {
                 totalHours = result.getFloat("sum_hours");
@@ -69,12 +71,12 @@ public class Device extends BaseEntity {
     }
 
     public float getTotalHours() {
-        String sql = String.format(getTotalHoursQueryTemplate, PlanSheet.tableName, Plan.tableName, getId(), State.FINISHED);
+        String sql = String.format(GET_TOTAL_HOURS_QUERY_TEMPLATE, PlanSheet.TABLE_NAME, Plan.tableName, getId(), State.FINISHED);
         return getTotalHoursFromQuery(sql);
     }
 
     public float getTotalHoursByPlanName(PlanName planName) {
-        String sql = String.format(getTotalHoursByPlanNameQueryTemplate, PlanSheet.tableName, Plan.tableName, getId(), State.FINISHED, planName);
+        String sql = String.format(GET_TOTAL_HOURS_BY_PLAN_NAME_QUERY_TEMPLATE, PlanSheet.TABLE_NAME, Plan.tableName, getId(), State.FINISHED, planName);
         return getTotalHoursFromQuery(sql);
     }
 
@@ -82,7 +84,7 @@ public class Device extends BaseEntity {
         ArrayList<Device> deviceArrayList = new ArrayList<Device>();
         ResultSet result = null;
         try {
-            Statement statement = getStatementInstance();
+            Statement statement = MySQL.getStatementInstance();
             result = statement.executeQuery(sql);
             while (result.next()) {
                 int id = result.getInt("id");
@@ -98,7 +100,7 @@ public class Device extends BaseEntity {
     }
 
     public static ArrayList<Device> getDevicesByDeviceTypeId(int deviceTypeId) {
-        String sql = String.format(getDevicesByDeviceTypeIdQueryTemplate, Device.tableName, deviceTypeId);
+        String sql = String.format(GET_DEVICES_BY_DEVICE_TYPE_ID_QUERY_TEMPLATE, Device.TABLE_NAME, deviceTypeId);
         ArrayList<Device> deviceArrayList = getDevicesFromQuery(sql);
         return deviceArrayList;
     }

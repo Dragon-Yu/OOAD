@@ -11,11 +11,11 @@ public class DeviceType extends BaseEntity {
     private String code;
     private String name;
     private String description;
-    public static final String tableName = "device_type";
-    private static final String saveQueryTemplate = "insert into %s (code, name, description) values ('%s', '%s', '%s')";
+    public static final String TABLE_NAME = "device_type";
+    private static final String SAVE_QUERY_TEMPLATE = "insert into %s (code, name, description) values ('%s', '%s', '%s')";
 
     public DeviceType() {
-        super(tableName);
+        super(TABLE_NAME);
     }
     public DeviceType(String code, String name, String description) {
         this();
@@ -23,13 +23,14 @@ public class DeviceType extends BaseEntity {
         this.name = name;
         this.description = description;
     }
-    public DeviceType(int id, String code, String name, String description) {
+
+    private DeviceType(int id, String code, String name, String description) {
         this(code, name, description);
         setId(id);
     }
 
     public void save() {
-        super.save(String.format(saveQueryTemplate, tableName, code, name, description));
+        super.save(String.format(SAVE_QUERY_TEMPLATE, TABLE_NAME, code, name, description));
     }
 
     public ArrayList<Device> getDevices() {
