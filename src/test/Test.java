@@ -11,7 +11,9 @@ import java.util.Random;
 public class Test {
     public static void main(String args[]) {
         DeviceType deviceType1 = new DeviceType("#A1", "Haier TV", "Haier TV Set, 15");
+        System.out.println(deviceType1.exist());
         deviceType1.save();
+        System.out.println(deviceType1.exist());
         deviceType1.addPlan(5, PlanName.SMALL, "something small");
         deviceType1.addPlan(20, PlanName.MIDDLE, "something mid");
         deviceType1.addPlan(30, PlanName.BIG, "something big");

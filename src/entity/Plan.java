@@ -1,5 +1,7 @@
 package entity;
 
+import database.MySQL;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,7 +31,7 @@ public class Plan extends BaseEntity{
         this.description = description;
         this.deviceTpyeId = deviceTpyeId;
     }
-    public Plan(int id, int days, PlanName name, String description, int deviceTpyeId) {
+    private Plan(int id, int days, PlanName name, String description, int deviceTpyeId) {
         this(days, name, description, deviceTpyeId);
         setId(id);
     }
@@ -42,7 +44,7 @@ public class Plan extends BaseEntity{
         ArrayList<Plan> planArrayList = new ArrayList<Plan>();
         ResultSet result = null;
         try {
-            Statement statement = getStatementInstance();
+            Statement statement = MySQL.getStatementInstance();
             result = statement.executeQuery(sql);
             while (result.next()) {
                 int id = result.getInt("id");
