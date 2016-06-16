@@ -1,7 +1,12 @@
 package entity;
 
 
+import database.MySQL;
+
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -29,6 +34,25 @@ public class DeviceType extends BaseEntity {
         setId(id);
     }
 
+    public static ArrayList<DeviceType> getDeviceTypesFromQuery(String sql) {
+        ArrayList<DeviceType> deviceTypeArrayList = new ArrayList<DeviceType>();
+        ResultSet result;
+        try {
+            Statement statement = MySQL.getStatementInstance();
+            result = statement.executeQuery(sql);
+            while (result.next()) {
+                int id = result.getInt("id");
+                String code = result.getString("code");
+                String name = result.getString("name");
+                String description = result.getString("description");
+                deviceTypeArrayList.add(new DeviceType(id, code, name, description));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return deviceTypeArrayList;
+    }
+
     public void save() {
         super.save(String.format(SAVE_QUERY_TEMPLATE, TABLE_NAME, code, name, description));
     }
@@ -51,5 +75,16 @@ public class DeviceType extends BaseEntity {
         Plan plan = new Plan(days, name, description, getId());
         plan.save();
         return plan;
+    }
+
+    public static void main(String args[]) {
+        String sql = "select * from device_type where code = '#A2'";
+        ArrayList<DeviceType> deviceTypeArrayList = DeviceType.getDeviceTypesFromQuery(sql);
+        for (DeviceType deviceType : deviceTypeArrayList) {
+            System.out.print(deviceType.getId() + " ");
+            System.out.print(deviceType.code + " ");
+            System.out.print(deviceType.name + " ");
+            System.out.println(deviceType.description + " ");
+        }
     }
 }

@@ -28,6 +28,20 @@ public class PlanSheet extends BaseEntity {
     public PlanSheet() {
         super(TABLE_NAME);
     }
+    public PlanSheet(int deviceId, int planId, State state, Date shouldDoTime, Date doTime, int employeeId, float hours) {
+        this();
+        this.deviceId = deviceId;
+        this.planId = planId;
+        this.state = state;
+        this.shouldDoTime = shouldDoTime;
+        this.doTime = doTime;
+        this.employeeId = employeeId;
+        this.hours = hours;
+    }
+    public PlanSheet(int id, int deviceId, int planId, State state, Date shouldDoTime, Date doTime, int employeeId, float hours) {
+        this(deviceId, planId, state, shouldDoTime, doTime, employeeId, hours);
+        setId(id);
+    }
     public PlanSheet(int deviceId, int planId, Date shouldDoTime) {
         this();
         this.deviceId = deviceId;
@@ -36,14 +50,14 @@ public class PlanSheet extends BaseEntity {
     }
     public PlanSheet(int id, int deviceId, int planId, Date shouldDoTime) {
         this(deviceId, planId, shouldDoTime);
-        setId(id);
+        this.setId(id);
     }
 
     public Date getShouldDoTime() {
         return shouldDoTime;
     }
 
-    public void updateFromQuery(String sql) {
+    private void updateFromQuery(String sql) {
         Statement statement = MySQL.getStatementInstance();
         try {
             int result = statement.executeUpdate(sql);
@@ -64,10 +78,8 @@ public class PlanSheet extends BaseEntity {
         super.save(String.format(SAVE_QUERY_TEMPLATE, PlanSheet.TABLE_NAME, deviceId, planId, shouldDoTime));
     }
 
-    public static ArrayList<PlanSheet> getWaitPlanSheetsWithinDays(int days) {
+    public static ArrayList<PlanSheet> getPlanSheetsFromQuery(String sql) {
         ArrayList<PlanSheet> planSheetArrayList = new ArrayList<PlanSheet>();
-        Date endDate = new Date((new java.util.Date()).getTime() + ONE_DAY * days);
-        String sql = String.format(GET_WAIT_PLAN_SHEETS_WITHIN_DAYS_QUERY_TEMPLATE, TABLE_NAME, endDate, State.WAITING);
         Statement statement = MySQL.getStatementInstance();
         ResultSet result = null;
         try {
@@ -76,12 +88,35 @@ public class PlanSheet extends BaseEntity {
                 int id = result.getInt("id");
                 int deviceId = result.getInt("device_id");
                 int planId = result.getInt("plan_id");
+                State state = State.valueOf(result.getString("state"));
                 Date shouldDoTime = result.getDate("should_do_time");
-                planSheetArrayList.add(new PlanSheet(id, deviceId, planId, shouldDoTime));
+                Date doTime = result.getDate("do_time");
+                int employeeId = result.getInt("employee_id");
+                float hours = result.getFloat("hours");
+                planSheetArrayList.add(new PlanSheet(id, deviceId, planId, state, shouldDoTime, doTime, employeeId, hours));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return planSheetArrayList;
+    }
+
+    public static ArrayList<PlanSheet> getWaitPlanSheetsWithinDays(int days) {
+        Date endDate = new Date((new java.util.Date()).getTime() + ONE_DAY * days);
+        String sql = String.format(GET_WAIT_PLAN_SHEETS_WITHIN_DAYS_QUERY_TEMPLATE, TABLE_NAME, endDate, State.WAITING);
+        return getPlanSheetsFromQuery(sql);
+    }
+
+    public static void main(String args[]) {
+        String sql = "select * from plan_sheet where do_time is null";
+        ArrayList<PlanSheet> planSheetArrayList = getPlanSheetsFromQuery(sql);
+        for (PlanSheet planSheet : planSheetArrayList) {
+            System.out.print(planSheet.getId() + " ");
+            System.out.print(planSheet.deviceId + " ");
+            System.out.print(planSheet.shouldDoTime + " ");
+            System.out.print(planSheet.doTime + " ");
+            System.out.print(planSheet.employeeId + " ");
+            System.out.println(planSheet.hours);
+        }
     }
 }

@@ -2,7 +2,8 @@ package entity;
 
 import database.MySQL;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by Dillion on 6/7/16.
