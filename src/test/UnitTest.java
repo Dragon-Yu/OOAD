@@ -4,6 +4,7 @@ import com.mysql.jdbc.authentication.MysqlClearPasswordPlugin;
 import database.MySQL;
 import entity.*;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 
@@ -28,10 +29,14 @@ public class UnitTest {
         employee1.save();
         Employee employee2 = new Employee("zhang222", Gender.F, 25);
         employee1.save();
+        ResultSet result;
         try {
             //加上getInt(0)就会出错
-            //MySQL.getStatementInstance().executeQuery(sql).getInt("count(*)");
-            MySQL.getStatementInstance().executeQuery(sql);
+            result = MySQL.getStatementInstance().executeQuery(sql);
+            result.next();
+            int a = result.getInt(1);
+            System.out.print(a);
+            //MySQL.getStatementInstance().executeQuery(sql);
         } catch (SQLException e) {
             System.out.println("fail");
             System.out.println(e.getMessage());
@@ -48,9 +53,9 @@ public class UnitTest {
     }
     @Test
     public void testAddPlan(){
-        deviceType1.addPlan(5, PlanName.SMALL, "something small");
-        deviceType1.addPlan(20, PlanName.MIDDLE, "something mid");
-        deviceType1.addPlan(30, PlanName.BIG, "something big");
+        deviceType1.addPlan(5, PlanType.SMALL, "something small");
+        deviceType1.addPlan(20, PlanType.MIDDLE, "something mid");
+        deviceType1.addPlan(30, PlanType.BIG, "something big");
         //
 
         assertEquals(true, deviceType1.exist());
@@ -82,9 +87,9 @@ class Readit {
         System.out.println(deviceType1.exist());
         deviceType1.save();
         System.out.println(deviceType1.exist());//
-        deviceType1.addPlan(5, PlanName.SMALL, "something small");
-        deviceType1.addPlan(20, PlanName.MIDDLE, "something mid");
-        deviceType1.addPlan(30, PlanName.BIG, "something big");
+        deviceType1.addPlan(5, PlanType.SMALL, "something small");
+        deviceType1.addPlan(20, PlanType.MIDDLE, "something mid");
+        deviceType1.addPlan(30, PlanType.BIG, "something big");
         Date date = new Date((new java.util.Date()).getTime());
         Device device1 = deviceType1.addDevice(date, "Cai Lun Road");
         Device device2 = deviceType1.addDevice(date, "Zu Chong Zhi Road");
@@ -94,9 +99,9 @@ class Readit {
         }
         DeviceType deviceType2 = new DeviceType("#A2", "Haier Air Machine", "Haier Air Machine, 100W");
         deviceType2.save();
-        deviceType2.addPlan(30, PlanName.SMALL, "something small");
-        deviceType2.addPlan(40, PlanName.MIDDLE, "something mid");
-        deviceType2.addPlan(60, PlanName.BIG, "something big");
+        deviceType2.addPlan(30, PlanType.SMALL, "something small");
+        deviceType2.addPlan(40, PlanType.MIDDLE, "something mid");
+        deviceType2.addPlan(60, PlanType.BIG, "something big");
         deviceType2.addDevice(date, "1211");
         deviceType2.addDevice(date, "1201");
         deviceType2.addDevice(date, "1608");
@@ -118,11 +123,11 @@ class Readit {
                 planSheet.cancel();
             }
         }
-        for (PlanName planName : PlanName.values()) {
+        for (PlanType planName : PlanType.values()) {
             System.out.println(planName);
-            System.out.println(device1.getTotalHoursByPlanName(planName));
-            System.out.println(device2.getTotalHoursByPlanName(planName));
-            System.out.println(device3.getTotalHoursByPlanName(planName));
+            System.out.println(device1.getTotalHoursByPlanType(planName));
+            System.out.println(device2.getTotalHoursByPlanType(planName));
+            System.out.println(device3.getTotalHoursByPlanType(planName));
         }
     }
 }
