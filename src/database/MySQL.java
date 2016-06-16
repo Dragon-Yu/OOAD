@@ -9,8 +9,10 @@ import java.sql.Statement;
  * Created by Dillion on 6/13/16.
  */
 public class MySQL {
-    private static final String DB_URL = "jdbc:mysql://localhost:3307/device_fixing_management?" +
-            "user=root&password=3223232mysql";
+//    private static final String DB_URL = "jdbc:mysql://localhost:3307/device_fixing_management?" +
+//            "user=root&password=3223232mysql";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/device_fixing_management?" +
+            "user=root&password=yxl";
     private static Connection conn = null;
     private static Statement statement = null;
 
