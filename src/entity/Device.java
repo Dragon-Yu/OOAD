@@ -75,8 +75,8 @@ public class Device extends BaseEntity {
         return getTotalHoursFromQuery(sql);
     }
 
-    public float getTotalHoursByPlanName(PlanName planName) {
-        String sql = String.format(GET_TOTAL_HOURS_BY_PLAN_NAME_QUERY_TEMPLATE, PlanSheet.TABLE_NAME, Plan.tableName, getId(), State.FINISHED, planName);
+    public float getTotalHoursByPlanType(PlanType planType) {
+        String sql = String.format(GET_TOTAL_HOURS_BY_PLAN_NAME_QUERY_TEMPLATE, PlanSheet.TABLE_NAME, Plan.tableName, getId(), State.FINISHED, planType);
         return getTotalHoursFromQuery(sql);
     }
 

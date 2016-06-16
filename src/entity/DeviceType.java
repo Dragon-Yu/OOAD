@@ -71,8 +71,8 @@ public class DeviceType extends BaseEntity {
         return device;
     }
 
-    public Plan addPlan(int days, PlanName name, String description) {
-        Plan plan = new Plan(days, name, description, getId());
+    public Plan addPlan(int days, PlanType type, String description) {
+        Plan plan = new Plan(days, type, description, getId());
         plan.save();
         return plan;
     }
