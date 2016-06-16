@@ -4,6 +4,7 @@ import com.mysql.jdbc.authentication.MysqlClearPasswordPlugin;
 import database.MySQL;
 import entity.*;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Random;
 
 import org.junit.Test;
@@ -20,6 +21,23 @@ public class UnitTest {
 //    public void testCreateWorkDatabase(){
 //        MySQL.createWorkDatabase();
 //    }
+    @Test
+    public void testAddEmployee() {
+        String sql = "select count(*) from employee where name='wang' and gender='M' and age=25;";
+        Employee employee1 = new Employee("wang111", Gender.M, 25);
+        employee1.save();
+        Employee employee2 = new Employee("zhang222", Gender.F, 25);
+        employee1.save();
+        try {
+            //加上getInt(0)就会出错
+            //MySQL.getStatementInstance().executeQuery(sql).getInt("count(*)");
+            MySQL.getStatementInstance().executeQuery(sql);
+        } catch (SQLException e) {
+            System.out.println("fail");
+            System.out.println(e.getMessage());
+        }
+
+    }
     @Test
     public void testSavaDeviceType(){
         System.out.println(deviceType1.exist());
