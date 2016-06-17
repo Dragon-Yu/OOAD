@@ -54,6 +54,9 @@ public class Employee extends BaseEntity {
         super.save(String.format(SAVE_QUERY_TEMPLATE, TABLE_NAME, name, gender, age));
     }
 
+    public void addEmployee(){
+        this.save();
+    }
     public static void main(String args[]) {
         String sql = "select * from employee where id = 2";
         ArrayList<Employee> employeeArrayList = Employee.getEmployeeFromQuery(sql);

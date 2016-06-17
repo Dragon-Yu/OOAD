@@ -57,6 +57,10 @@ public class DeviceType extends BaseEntity {
         super.save(String.format(SAVE_QUERY_TEMPLATE, TABLE_NAME, code, name, description));
     }
 
+    public void addDeviceType(){
+        this.save();
+    }
+
     public ArrayList<Device> getDevices() {
         return Device.getDevicesByDeviceTypeId(getId());
     }
